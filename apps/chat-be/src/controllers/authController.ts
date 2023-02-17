@@ -30,10 +30,12 @@ export const singupUser = async (req: Request, res: Response) => {
       isAdmin: user.isAdmin
     }
   }
-  res.status(201).json({
-    username: user.username,
-    email: user.email
-  })
+  if (user) {
+    return res.status(201).json({
+      username: user.username,
+      email: user.email
+    })
+  }
 
   responseMessage(400, res, "Invalid user data");
 }
