@@ -24,6 +24,12 @@ const userSchema = new Schema<IUser>({
     type: Boolean,
     default: false
   },
+  messages: [{
+    type: Schema.Types.ObjectId,
+    ref: "Message"
+  }],
+}, {
+  timestamps: true
 })
 
 export default mongoose.model("User", userSchema)

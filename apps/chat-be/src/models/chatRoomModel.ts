@@ -11,7 +11,13 @@ const charRoomSchema = new Schema<IChatRoom>({
     unique: true,
     maxlength: [500, "Comment can't have more than 500 characters"]
   },
-
-})
+  messages: [{
+    type: Schema.Types.ObjectId,
+    ref: "Message"
+  }],
+},
+  {
+    timestamps: true
+  })
 
 export default mongoose.model("ChatRoom", charRoomSchema)
