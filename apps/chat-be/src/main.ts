@@ -5,10 +5,6 @@
 
 import { createApp } from "./app/app";
 
-
-
-
-
 const port = process.env.NX_PORT || 3333;
 const app = createApp()
 

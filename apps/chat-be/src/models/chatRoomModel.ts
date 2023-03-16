@@ -9,7 +9,7 @@ const charRoomSchema = new Schema<IChatRoom>({
     type: String,
     required: true,
     unique: true,
-    maxlength: [500, "Comment can't have more than 500 characters"]
+    maxlength: [50, "Chat room name can't have more than 50 characters"]
   },
   messages: [{
     type: Schema.Types.ObjectId,

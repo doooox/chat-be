@@ -25,7 +25,7 @@ export const createMessages = async (req: Request, res: Response) => {
 
   if (!chatRoom) return responseMessage(400, res, "No chat room ID foun")
 
-  console.log("Did I Get Here?");
+
   const room = await ChatRoom.findById(chatRoom)
 
   if (!room) return responseMessage(200, res, "Chat room not found")
@@ -36,12 +36,10 @@ export const createMessages = async (req: Request, res: Response) => {
     user: _id
   })
 
-  console.log("second log", message);
-
   room.messages.push(message)
   room.save()
   await message.populate("user")
-  console.log("Did I Get Here?");
+
   if (message) return res.status(200).json(message)
 
 }

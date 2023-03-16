@@ -44,7 +44,6 @@ export const singinUser = async (req: Request, res: Response) => {
   const { email, password } = req.body
   const user = await User.findOne({ email })
 
-
   if (!user) return responseMessage(404, res, "Invalid email or password")
 
   const matchingPasswords = await compare(password, user.password);
