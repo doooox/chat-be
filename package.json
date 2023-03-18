@@ -9,17 +9,14 @@
     "@types/express-session": "^1.17.5",
     "@types/express-validator": "^3.0.0",
     "bcrypt": "^5.1.0",
-    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "express-validator": "^6.15.0",
     "mongodb": "^5.0.1",
     "mongoose": "^6.9.1",
-    "socket.io": "^4.6.1",
     "tslib": "^2.3.0",
-    "uuidv4": "^6.2.13",
-    "websocket-express": "^2.0.1"
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@nrwl/eslint-plugin-nx": "15.5.2",

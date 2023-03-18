@@ -3,7 +3,6 @@ import * as express from 'express'
 import session = require("express-session");
 import router from "../routes/routes";
 import connectDB from '../services/config/db';
-import { socket } from "../services/config/socketService";
 import { corsOptions } from '../utils/static';
 
 export const createApp = () => {
@@ -28,6 +27,6 @@ export const createApp = () => {
     })
   );
   app.use('/api', router);
-  socket(app)
+
   return app
 }
