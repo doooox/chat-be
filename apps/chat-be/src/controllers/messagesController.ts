@@ -15,16 +15,12 @@ export const getMessages = async (req: Request, res: Response) => {
   if (messages) return res.status(200).json(messages)
 
   responseMessage(400, res, "No messages found")
-
 }
 
 export const createMessages = async (req: Request, res: Response) => {
-  const { text } = req.body
-  const { chatRoom } = req.params
-  const { _id } = req.session.user
-
+  console.log(req.body);
+  const { text, user, chatRoom } = req.body
   if (!chatRoom) return responseMessage(400, res, "No chat room ID foun")
-
 
   const room = await ChatRoom.findById(chatRoom)
 
@@ -33,7 +29,7 @@ export const createMessages = async (req: Request, res: Response) => {
   const message = await Message.create({
     text,
     chatRoom,
-    user: _id
+    user
   })
 
   room.messages.push(message)

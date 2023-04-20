@@ -1,26 +1,21 @@
-import { NextFunction, Request, Response } from "express";
-import { responseMessage } from "../../utils/helpers";
+import { Request, Response, NextFunction } from "express";
+import jwt = require("jsonwebtoken");
+import { JwtPayload } from "jsonwebtoken";
 
-export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (req.session.user) {
-    next()
-  } else {
-    responseMessage(401, res, "User is not authenticated!")
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
-}
-
-export const isNotAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.session.user) {
-    next()
-  } else {
-    responseMessage(403, res, "User is already authenticated")
+  try {
+    const payload = jwt.verify(token, process.env.NX_JWT_SECRET) as JwtPayload;
+    req.user = {
+      id: payload.id as string,
+      email: payload.email as string,
+      username: payload.username as string,
+    };
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
-}
-
-export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  if (req.session.user.isAdmin) {
-    next()
-  } else {
-    responseMessage(403, res, "User must be admin")
-  }
-}
+};

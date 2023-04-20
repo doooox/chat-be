@@ -2,9 +2,18 @@ import { Request, Response } from "express";
 import { responseMessage } from "../utils/helpers";
 import User from "../models/userModel"
 import { compare, genSalt, hash } from "bcrypt"
+import jwt = require("jsonwebtoken");
+import { Types } from "mongoose";
+
+const generateToken = (id: Types.ObjectId, email: string, username: string) => {
+  return jwt.sign({ id, email, username }, process.env.NX_JWT_SECRET, {
+    expiresIn: "1d"
+  })
+}
 
 export const singupUser = async (req: Request, res: Response) => {
   const { email, username, password, confirmPassword } = req.body
+  console.log(process.env.NX_JWT_SECRET);
 
   if (password !== confirmPassword) return responseMessage(400, res, "Passwords don't match!")
 
@@ -23,17 +32,10 @@ export const singupUser = async (req: Request, res: Response) => {
   })
 
   if (user) {
-    req.session.user = {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      isAdmin: user.isAdmin
-    }
-  }
-  if (user) {
     return res.status(201).json({
       username: user.username,
-      email: user.email
+      email: user.email,
+      token: generateToken(user._id, user.email, user.username)
     })
   }
 
@@ -51,24 +53,25 @@ export const singinUser = async (req: Request, res: Response) => {
   if (!matchingPasswords) return responseMessage(400, res, "Invalid username or password")
 
   if (user) {
-    req.session.user = {
-      _id: user._id,
+    return res.status(201).json({
+      id: user.id,
       username: user.username,
       email: user.email,
-      isAdmin: user.isAdmin
-    }
+      isAdmin: user.isAdmin,
+      token: generateToken(user._id, user.email, user.username)
+    })
   }
-  return res.status(201).json({
-    username: user.username,
-    email: user.email,
-    isAdmin: user.isAdmin
-  })
-
 }
 
 export const singoutUser = async (req: Request, res: Response) => {
-  req.session.destroy((error) => {
-    if (error) return responseMessage(400, res, "Unable to log out")
-    res.status(200).json({ message: "User is logged out" })
-  })
+  const userId = req.user.id;
+  try {
+    const user = await User.findByIdAndUpdate(userId, { token: null });
+    if (!user) throw new Error('User not found');
+    res.status(200).json({ message: "Logout successful" });
+
+  } catch (err) {
+    console.error(err);
+    responseMessage(500, res, 'Server error');
+  }
 }
